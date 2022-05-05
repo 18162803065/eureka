@@ -74,6 +74,7 @@ public abstract class PropertiesInstanceConfig extends AbstractInstanceConfig im
                 ? namespace
                 : namespace + ".";
 
+
         appGrpNameFromEnv = ConfigurationManager.getConfigInstance()
                 .getString(FALLBACK_APP_GROUP_KEY, Values.UNKNOWN_APPLICATION);
 

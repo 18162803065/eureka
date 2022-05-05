@@ -11,6 +11,7 @@ public abstract class DiscoveryEvent implements EurekaEvent {
     
     // System time when the event happened
     private final long timestamp;
+    
     protected DiscoveryEvent() {
         this.timestamp = System.currentTimeMillis();
     }
