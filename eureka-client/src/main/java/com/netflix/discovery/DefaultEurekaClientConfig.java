@@ -81,6 +81,7 @@ public class DefaultEurekaClientConfig implements EurekaClientConfig {
                 : namespace + ".";
 
         this.configInstance = Archaius1Utils.initConfig(CommonConstants.CONFIG_FILE_NAME);
+        // namespace = 'eureka.'
         this.transportConfig = new DefaultEurekaTransportConfig(namespace, configInstance);
     }
 

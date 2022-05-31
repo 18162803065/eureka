@@ -13,7 +13,9 @@ public class DefaultEurekaTransportConfig implements EurekaTransportConfig {
     private final String namespace;
     private final DynamicPropertyFactory configInstance;
 
+    // parentNamespace = 'eureka.'
     public DefaultEurekaTransportConfig(String parentNamespace, DynamicPropertyFactory configInstance) {
+        // eureka.transport.
         this.namespace = parentNamespace == null
                 ? SUB_NAMESPACE
                 : (parentNamespace.endsWith(".")

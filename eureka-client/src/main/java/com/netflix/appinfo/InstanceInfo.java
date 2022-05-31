@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @Serializer("com.netflix.discovery.converters.EntityBodyConverter")
 @XStreamAlias("instance")
 @JsonRootName("instance")
-public class InstanceInfo {
+public class  InstanceInfo {
 
     /**
      * {@link InstanceInfo} JSON and XML format for port information does not follow the usual conventions, which
