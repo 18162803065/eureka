@@ -50,11 +50,13 @@ public class ExampleEurekaClient {
 
     private static synchronized ApplicationInfoManager initializeApplicationInfoManager(EurekaInstanceConfig instanceConfig) {
         if (applicationInfoManager == null) {
+            // 读取eureka-client-properties文件形成一个服务实例
             InstanceInfo instanceInfo = new EurekaConfigBasedInstanceInfoProvider(instanceConfig).get();
+            // j基于服务实例信息和复服务实例配置构造一个服务实例管理器
             applicationInfoManager = new ApplicationInfoManager(instanceConfig, instanceInfo);
         }
-
         return applicationInfoManager;
+
     }
 
     private static synchronized EurekaClient initializeEurekaClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig) {
@@ -128,8 +130,8 @@ public class ExampleEurekaClient {
         System.setProperty("eureka.vipAddress", "eureka.mydomain.net");
         System.setProperty("eureka.port", "8080");
         System.setProperty("eureka.preferSameZone", "false");
-        System.setProperty("eureka.shouldUseDns", "fa   lse");
-        System.setProperty("eureka.shouldFetchRegistry", "false");
+        System.setProperty("eureka.shouldUseDns", "false");
+        System.setProperty("eureka.shouldFetchRegistry", "true");
         System.setProperty("eureka.serviceUrl.defaultZone", myServiceUrl);
         System.setProperty("eureka.serviceUrl.default.defaultZone", myServiceUrl);
         System.setProperty("eureka.awsAccessId", "fake_aws_access_id");
@@ -145,6 +147,7 @@ public class ExampleEurekaClient {
 
         // create the client
         ApplicationInfoManager applicationInfoManager = initializeApplicationInfoManager(new MyDataCenterInstanceConfig());
+        //
         EurekaClient client = initializeEurekaClient(applicationInfoManager, new DefaultEurekaClientConfig());
 
         // use the client

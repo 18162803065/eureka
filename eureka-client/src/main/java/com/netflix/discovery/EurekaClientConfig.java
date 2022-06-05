@@ -67,6 +67,7 @@ public interface EurekaClientConfig {
      * replicated to the eureka server.
      *
      * @return the instance replication interval in seconds.
+     * 指示将实例信息复制到eureka服务器的初始时间(以秒为单位)
      */
     int getInstanceInfoReplicationIntervalSeconds();
 

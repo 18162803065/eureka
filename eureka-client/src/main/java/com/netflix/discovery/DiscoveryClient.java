@@ -323,6 +323,7 @@ public class DiscoveryClient implements EurekaClient {
             logger.warn("Setting instanceInfo to a passed in null value");
         }
 
+        // 表备用得注册表
         this.backupRegistryProvider = backupRegistryProvider;
 
         this.urlRandomizer = new EndpointUtils.InstanceInfoBasedUrlRandomizer(instanceInfo);
@@ -348,7 +349,7 @@ public class DiscoveryClient implements EurekaClient {
 
         logger.info("Initializing Eureka in region {}", clientConfig.getRegion());
 
-        // 单个注册中心启动
+        // 单个注册中心启动 释放资源
         if (!config.shouldRegisterWithEureka() && !config.shouldFetchRegistry()) {
             logger.info("Client configured to neither register nor query for data.");
             scheduler = null;
@@ -400,7 +401,7 @@ public class DiscoveryClient implements EurekaClient {
 
             // 支持eureka server 和 eureka client进行通信组件初始化操作
             eurekaTransport = new EurekaTransport();
-            // 定时进行操作
+            // 定时进行操作（将网络通信组件初始化,获取服务实例注册得客户端组件参数）
             scheduleServerEndpointTask(eurekaTransport, args);
 
             AzToRegionMapper azToRegionMapper;
@@ -419,10 +420,12 @@ public class DiscoveryClient implements EurekaClient {
 
         // 如果要抓取注册表的话，在这里就会去抓取注册表了
         if (clientConfig.shouldFetchRegistry() && !fetchRegistry(false)) {
+            // 如果抓取注册表不成功则使用自己备用得注册表
             fetchRegistryFromBackup();
         }
 
         // call and execute the pre registration handler before all background tasks (inc registration) is started
+        // 在所有后台任务(inc注册)启动之前调用并执行预注册处理程序
         if (this.preRegistrationHandler != null) {
             this.preRegistrationHandler.beforeRegistration();
         }
@@ -1280,7 +1283,7 @@ public class DiscoveryClient implements EurekaClient {
                     ),
                     renewalIntervalInSecs, TimeUnit.SECONDS);
 
-            // 服务实例副本机制
+            // 服务实例副本机制（来负责eurekaclient 注册机制）
             instanceInfoReplicator = new InstanceInfoReplicator(
                     this,
                     instanceInfo,
@@ -1311,6 +1314,8 @@ public class DiscoveryClient implements EurekaClient {
                 applicationInfoManager.registerStatusChangeListener(statusChangeListener);
             }
 
+            // getInitialInstanceInfoReplicationIntervalSeconds：每隔多长时间将自己实例信息复制到eureka server中 默认是40秒
+            // 类似服务注册
             instanceInfoReplicator.start(clientConfig.getInitialInstanceInfoReplicationIntervalSeconds());
         } else {
             logger.info("Not registering with Eureka server per configuration");
@@ -1379,8 +1384,8 @@ public class DiscoveryClient implements EurekaClient {
      * isDirty flag on the instanceInfo is set to true
      */
     void refreshInstanceInfo() {
-        applicationInfoManager.refreshDataCenterInfoIfRequired();
         applicationInfoManager.refreshLeaseInfoIfRequired();
+        applicationInfoManager.refreshDataCenterInfoIfRequired();
 
         InstanceStatus status;
         try {
@@ -1391,6 +1396,7 @@ public class DiscoveryClient implements EurekaClient {
         }
 
         if (null != status) {
+            // 设置服务实例状态
             applicationInfoManager.setInstanceStatus(status);
         }
     }
