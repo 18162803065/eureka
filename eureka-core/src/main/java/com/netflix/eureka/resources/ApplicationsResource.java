@@ -86,6 +86,7 @@ public class ApplicationsResource {
      *            application.
      * @return information about a particular application.
      */
+    // 接受从eureka server中发送的请求
     @Path("{appId}")
     public ApplicationResource getApplicationResource(
             @PathParam("version") String version,
